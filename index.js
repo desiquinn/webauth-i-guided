@@ -18,9 +18,10 @@ server.get('/', (req, res) => {
 });
 
 server.post('/api/register', (req, res) => {
-  let user = req.body;
+  let { username, password } = req.body;
+  const hash = bcrypt.hashSync(password);
 
-  Users.add(user)
+  Users.add({ username, password: hash })
     .then(saved => {
       res.status(201).json(saved);
     })
@@ -60,6 +61,7 @@ server.get('/hash', (req, res) => {
   const hash = bcrypt.hashSync(name, 10);
   res.send(`The hash for ${name} is ${hash}`)
 });
+
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`\n** Running on port ${port} **\n`));
